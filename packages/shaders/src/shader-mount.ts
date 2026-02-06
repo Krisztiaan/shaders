@@ -9,9 +9,9 @@ function resolveShaderColorSpace(colorSpace: ShaderColorSpace | undefined): Pred
   if (colorSpace === 'auto') {
     if (typeof window === 'undefined') return undefined;
     try {
-      return window.matchMedia?.('(color-gamut: p3)').matches ? 'display-p3' : 'srgb';
+      return window.matchMedia?.('(color-gamut: p3)')?.matches ? 'display-p3' : 'srgb';
     } catch {
-      return undefined;
+      return 'srgb';
     }
   }
   return colorSpace;
