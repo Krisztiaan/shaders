@@ -393,6 +393,8 @@ export class ShaderMount {
   private setUniformValues = (updatedUniforms: ShaderMountUniforms) => {
     this.gl.useProgram(this.program);
     Object.entries(updatedUniforms).forEach(([key, value]) => {
+      // undefined is supported as a convenience for SSR/optional values (we just skip setting the uniform)
+      if (value === undefined) return;
       // Grab the value to use in the uniform cache
       let cacheValue: ShaderMountUniforms[keyof ShaderMountUniforms] | string = value;
       if (value instanceof HTMLImageElement) {

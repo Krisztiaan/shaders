@@ -6,7 +6,7 @@ import { $ } from 'bun';
 // This publish process automatically replaces workspace:* with the actual version number of other packages currently in the repo
 
 // The packages to publish – this will run in order and await each package before moving on
-const packages = ['shaders', 'shaders-react'];
+const packages = ['shaders', 'shaders-react', 'shaders-svelte'];
 
 const isDryRun = process.argv.includes('--dry-run');
 // Extract the tag value from the command line arguments
@@ -58,7 +58,7 @@ async function publish(pkg) {
   const originalPackageJson = readFileSync(`${packagePath}/package.json`, 'utf8');
   const packageJson = JSON.parse(originalPackageJson);
   // Search the package.json for any packages in our packageVersionMap and replace the version with the current version
-  for (const [key, value] of Object.entries(packageJson.dependencies)) {
+  for (const [key, value] of Object.entries(packageJson.dependencies ?? {})) {
     if (packageVersionMap[key]) {
       packageJson.dependencies[key] = packageVersionMap[key];
     }

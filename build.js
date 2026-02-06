@@ -47,5 +47,14 @@ async function build(packageDir) {
   console.log(`Built ${outDir}/index.js`);
 }
 
-build('packages/shaders');
-build('packages/shaders-react');
+await build('packages/shaders');
+await build('packages/shaders-react');
+
+// Svelte bindings are built via `svelte-package` (SvelteKit packaging)
+try {
+  execSync('bun --cwd packages/shaders-svelte prepack', { stdio: 'inherit' });
+  console.log('Built packages/shaders-svelte/dist');
+} catch (error) {
+  console.error('Could not build packages/shaders-svelte');
+  process.exit(1);
+}
