@@ -35,7 +35,7 @@
     "@paper-design/shaders": "workspace:*"
   },
   "peerDependencies": {
-    "svelte": "^5.0.0"
+    "svelte": "^5.29.0"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^7.0.0",
