@@ -22,6 +22,12 @@ export interface ShaderMountActionParams extends ShaderMotionParams {
   mipmaps?: string[];
   minPixelRatio?: number;
   maxPixelCount?: number;
+  /**
+   * WebGL context attributes.
+   *
+   * Note: changing the object identity will cause a remount. Prefer passing a stable reference
+   * (e.g. define a `const attrs = { ... }` once and pass that), rather than inline object literals.
+   */
   webGlContextAttributes?: WebGLContextAttributes;
   colorSpace?: ShaderColorSpace;
 }

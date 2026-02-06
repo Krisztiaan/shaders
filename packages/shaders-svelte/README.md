@@ -27,6 +27,10 @@
 <!-- these settings can be configured in code or designed in Paper -->
 ```
 
+## Notes
+
+- `webGlContextAttributes`: pass a stable object reference (avoid inline object literals), otherwise the shader remounts.
+
 ## Release notes
 
 [View changelog →](https://github.com/paper-design/shaders/blob/main/CHANGELOG.md)
