@@ -4,6 +4,7 @@ export type {
   PaperShaderElement,
   ShaderMotionParams,
   ShaderMountUniforms,
+  ShaderColorSpace,
   ShaderPreset,
   ImageShaderPreset,
 } from './shader-mount.js';

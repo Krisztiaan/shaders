@@ -1,4 +1,4 @@
-import type { ShaderMotionParams } from '@paper-design/shaders';
+import type { ShaderColorSpace, ShaderMotionParams } from '@paper-design/shaders';
 import type { HTMLAttributes } from 'svelte/elements';
 
 export type ShaderMountUniformValue =
@@ -23,6 +23,7 @@ export interface ShaderMountActionParams extends ShaderMotionParams {
   minPixelRatio?: number;
   maxPixelCount?: number;
   webGlContextAttributes?: WebGLContextAttributes;
+  colorSpace?: ShaderColorSpace;
 }
 
 export interface ShaderMountProps

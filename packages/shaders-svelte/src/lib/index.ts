@@ -123,7 +123,13 @@ export { halftoneCmykPresets } from './shaders/halftone-cmyk.js';
 export type { HalftoneCmykUniforms, HalftoneCmykParams } from '@paper-design/shaders';
 
 export { isPaperShaderElement, getShaderColorFromString } from '@paper-design/shaders';
-export type { PaperShaderElement, ShaderFit, ShaderSizingParams, ShaderSizingUniforms } from '@paper-design/shaders';
+export type {
+  PaperShaderElement,
+  ShaderFit,
+  ShaderSizingParams,
+  ShaderSizingUniforms,
+  ShaderColorSpace,
+} from '@paper-design/shaders';
 
 export {
   colorPanelsMeta,

@@ -20,6 +20,7 @@ export function shaderMount(node: HTMLElement, params: ShaderMountActionParams) 
   let lastFragmentShader: string | null = null;
   let lastMipmaps: string[] | undefined;
   let lastWebGlContextAttributes: WebGLContextAttributes | undefined;
+  let lastColorSpace: ShaderMountActionParams['colorSpace'];
 
   let initToken = 0;
   let uniformsToken = 0;
@@ -34,13 +35,15 @@ export function shaderMount(node: HTMLElement, params: ShaderMountActionParams) 
       shaderMount === null ||
       lastFragmentShader !== next.fragmentShader ||
       !areStringArraysEqual(lastMipmaps, next.mipmaps) ||
-      lastWebGlContextAttributes !== next.webGlContextAttributes;
+      lastWebGlContextAttributes !== next.webGlContextAttributes ||
+      lastColorSpace !== next.colorSpace;
 
     if (!needsRemount) return;
 
     lastFragmentShader = next.fragmentShader;
     lastMipmaps = next.mipmaps;
     lastWebGlContextAttributes = next.webGlContextAttributes;
+    lastColorSpace = next.colorSpace;
 
     const currentInitToken = ++initToken;
     const processedUniforms = await processUniforms(next.uniforms);
@@ -57,7 +60,8 @@ export function shaderMount(node: HTMLElement, params: ShaderMountActionParams) 
       next.frame,
       next.minPixelRatio,
       next.maxPixelCount,
-      next.mipmaps ?? []
+      next.mipmaps ?? [],
+      next.colorSpace
     );
   };
 
@@ -91,4 +95,3 @@ export function shaderMount(node: HTMLElement, params: ShaderMountActionParams) 
     },
   };
 }
-

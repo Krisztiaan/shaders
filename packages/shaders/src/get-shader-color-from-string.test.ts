@@ -46,6 +46,16 @@ describe('getShaderColorFromString', () => {
     expect(getShaderColorFromString('hsla(0, 100%, 50%, 0.5)')).toEqual([1, 0, 0, 0.5]);
   });
 
+  // Test CSS Color 4 `color(...)` inputs
+  test('handles color(display-p3 ...) format', () => {
+    expect(getShaderColorFromString('color(display-p3 1 0 0)')).toEqual([1, 0, 0, 1]);
+    expect(getShaderColorFromString('color(display-p3 0.5 0.25 0.75 / 0.5)')).toEqual([0.5, 0.25, 0.75, 0.5]);
+  });
+
+  test('handles percentage alpha in color(...) format', () => {
+    expect(getShaderColorFromString('color(srgb 1 0 0 / 50%)')).toEqual([1, 0, 0, 0.5]);
+  });
+
   // Test edge cases
   test('handles undefined input', () => {
     expect(getShaderColorFromString(undefined)).toEqual([0, 0, 0, 1]);

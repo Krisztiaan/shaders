@@ -20,6 +20,7 @@
     minPixelRatio,
     maxPixelCount,
     webGlContextAttributes,
+    colorSpace,
     width,
     height,
     element = $bindable(null),
@@ -35,6 +36,7 @@
     minPixelRatio,
     maxPixelCount,
     webGlContextAttributes,
+    colorSpace,
   });
 
   const attach = fromAction(shaderMount, () => actionParams);

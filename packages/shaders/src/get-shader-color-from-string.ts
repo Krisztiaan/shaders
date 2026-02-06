@@ -20,6 +20,13 @@ export function getShaderColorFromString(
     a = 1;
   if (colorString.startsWith('#')) {
     [r, g, b, a] = hexToRgba(colorString);
+  } else if (colorString.startsWith('color(')) {
+    const parsed = parseCssColorFunction(colorString);
+    if (!parsed) {
+      console.error('Unsupported color format', colorString);
+      return fallbackColor;
+    }
+    [r, g, b, a] = parsed;
   } else if (colorString.startsWith('rgb')) {
     [r, g, b, a] = parseRgba(colorString);
   } else if (colorString.startsWith('hsl')) {
@@ -54,6 +61,34 @@ function hexToRgba(hex: string): [number, number, number, number] {
   const g = parseInt(hex.slice(2, 4), 16) / 255;
   const b = parseInt(hex.slice(4, 6), 16) / 255;
   const a = parseInt(hex.slice(6, 8), 16) / 255;
+
+  return [r, g, b, a];
+}
+
+function parseCssNumberOrPercent(value: string): number {
+  const trimmed = value.trim();
+  if (trimmed.endsWith('%')) return parseFloat(trimmed.slice(0, -1)) / 100;
+  return parseFloat(trimmed);
+}
+
+/**
+ * Parse CSS Color 4 `color(...)` syntax for `display-p3` and `srgb`.
+ *
+ * Examples:
+ * - `color(display-p3 1 0 0)`
+ * - `color(display-p3 1 0 0 / 0.5)`
+ * - `color(srgb 1 0 0 / 50%)`
+ */
+function parseCssColorFunction(color: string): [number, number, number, number] | null {
+  const match = color.match(
+    /^color\(\s*(display-p3|srgb)\s+([+-]?(?:\d*\.)?\d+%?)\s+([+-]?(?:\d*\.)?\d+%?)\s+([+-]?(?:\d*\.)?\d+%?)(?:\s*\/\s*([+-]?(?:\d*\.)?\d+%?))?\s*\)$/i
+  );
+  if (!match) return null;
+
+  const r = parseCssNumberOrPercent(match[2] ?? '0');
+  const g = parseCssNumberOrPercent(match[3] ?? '0');
+  const b = parseCssNumberOrPercent(match[4] ?? '0');
+  const a = match[5] === undefined ? 1 : parseCssNumberOrPercent(match[5]);
 
   return [r, g, b, a];
 }

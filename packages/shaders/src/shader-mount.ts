@@ -2,6 +2,21 @@ import { vertexShaderSource } from './vertex-shader.js';
 
 const DEFAULT_MAX_PIXEL_COUNT: number = 1920 * 1080 * 4;
 
+export type ShaderColorSpace = PredefinedColorSpace | 'auto';
+
+function resolveShaderColorSpace(colorSpace: ShaderColorSpace | undefined): PredefinedColorSpace | undefined {
+  if (!colorSpace) return undefined;
+  if (colorSpace === 'auto') {
+    if (typeof window === 'undefined') return undefined;
+    try {
+      return window.matchMedia?.('(color-gamut: p3)').matches ? 'display-p3' : 'srgb';
+    } catch {
+      return undefined;
+    }
+  }
+  return colorSpace;
+}
+
 export class ShaderMount {
   public parentElement: PaperShaderElement;
   public canvasElement: HTMLCanvasElement;
@@ -60,7 +75,16 @@ export class ShaderMount {
      */
     maxPixelCount: number = DEFAULT_MAX_PIXEL_COUNT,
     /** Names of the uniforms that should have mipmaps generated for them */
-    mipmaps: string[] = []
+    mipmaps: string[] = [],
+    /**
+     * Canvas/WebGL output color space.
+     *
+     * If `'display-p3'`, the shader output is treated as Display P3 (wide gamut) on supported browsers/displays.
+     * If `'auto'`, uses Display P3 when `(color-gamut: p3)` matches, otherwise uses sRGB.
+     *
+     * Defaults to the browser's default (typically `'srgb'`).
+     */
+    colorSpace?: ShaderColorSpace
   ) {
     if (parentElement instanceof HTMLElement) {
       this.parentElement = parentElement as PaperShaderElement;
@@ -92,6 +116,17 @@ export class ShaderMount {
       throw new Error('Paper Shaders: WebGL is not supported in this browser');
     }
     this.gl = gl;
+
+    const resolvedColorSpace = resolveShaderColorSpace(colorSpace);
+    if (resolvedColorSpace) {
+      try {
+        // These are supported in modern browsers and typed in lib.dom.d.ts
+        this.gl.drawingBufferColorSpace = resolvedColorSpace;
+        this.gl.unpackColorSpace = resolvedColorSpace;
+      } catch (error) {
+        console.warn(`Paper Shaders: could not set WebGL color space to "${resolvedColorSpace}".`, error);
+      }
+    }
 
     this.initProgram();
     this.setupPositionAttribute();

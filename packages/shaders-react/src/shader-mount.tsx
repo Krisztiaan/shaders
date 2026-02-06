@@ -5,6 +5,7 @@ import {
   ShaderMount as ShaderMountVanilla,
   getEmptyPixel,
   type PaperShaderElement,
+  type ShaderColorSpace,
   type ShaderMotionParams,
   type ShaderMountUniforms,
 } from '@paper-design/shaders';
@@ -29,6 +30,7 @@ export interface ShaderMountProps extends Omit<React.ComponentProps<'div'>, 'col
   minPixelRatio?: number;
   maxPixelCount?: number;
   webGlContextAttributes?: WebGLContextAttributes;
+  colorSpace?: ShaderColorSpace;
 
   /** Inline CSS width style */
   width?: string | number;
@@ -41,6 +43,7 @@ export interface ShaderComponentProps extends Omit<React.ComponentProps<'div'>, 
   minPixelRatio?: number;
   maxPixelCount?: number;
   webGlContextAttributes?: WebGLContextAttributes;
+  colorSpace?: ShaderColorSpace;
 
   /** Inline CSS width style */
   width?: string | number;
@@ -129,6 +132,7 @@ export const ShaderMount: React.FC<ShaderMountProps> = forwardRef<PaperShaderEle
       fragmentShader,
       uniforms: uniformsProp,
       webGlContextAttributes,
+      colorSpace,
       speed = 0,
       frame = 0,
       width,
@@ -145,6 +149,12 @@ export const ShaderMount: React.FC<ShaderMountProps> = forwardRef<PaperShaderEle
     const divRef = useRef<PaperShaderElement>(null);
     const shaderMountRef: React.RefObject<ShaderMountVanilla | null> = useRef<ShaderMountVanilla>(null);
     const webGlContextAttributesRef = useRef(webGlContextAttributes);
+    const colorSpaceRef = useRef(colorSpace);
+
+    useEffect(() => {
+      webGlContextAttributesRef.current = webGlContextAttributes;
+      colorSpaceRef.current = colorSpace;
+    }, [webGlContextAttributes, colorSpace]);
 
     // Initialize the ShaderMountVanilla
     useEffect(() => {
@@ -161,7 +171,8 @@ export const ShaderMount: React.FC<ShaderMountProps> = forwardRef<PaperShaderEle
             frame,
             minPixelRatio,
             maxPixelCount,
-            mipmaps
+            mipmaps,
+            colorSpaceRef.current
           );
 
           setIsInitialized(true);
@@ -174,7 +185,7 @@ export const ShaderMount: React.FC<ShaderMountProps> = forwardRef<PaperShaderEle
         shaderMountRef.current?.dispose();
         shaderMountRef.current = null;
       };
-    }, [fragmentShader]);
+    }, [fragmentShader, colorSpace]);
 
     // Uniforms
     useEffect(() => {
