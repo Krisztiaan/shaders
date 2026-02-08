@@ -14,6 +14,10 @@ import {
   godRaysPresets,
   GrainGradient,
   grainGradientPresets,
+  Aurora,
+  auroraPresets,
+  Caustics,
+  causticsPresets,
   HalftoneCmyk,
   halftoneCmykPresets,
   HalftoneDots,
@@ -175,6 +179,22 @@ export const homeThumbnails = [
     name: 'Effects',
     shaders: [
       {
+        name: 'aurora',
+        image: '/shaders/aurora.svg',
+        url: '/aurora',
+        ShaderComponent: Aurora,
+        shaderConfig: { ...auroraPresets[0].params },
+        alwaysLivePreview: true,
+      },
+      {
+        name: 'caustics',
+        image: '/shaders/caustics.svg',
+        url: '/caustics',
+        ShaderComponent: Caustics,
+        shaderConfig: { ...causticsPresets[0].params },
+        alwaysLivePreview: true,
+      },
+      {
         name: 'mesh gradient',
         image: '/shaders/mesh-gradient.webp',
         url: '/mesh-gradient',
@@ -322,4 +342,3 @@ export const homeThumbnails = [
 ] satisfies HomeCategory[];
 
 export const flatHomeThumbnails = homeThumbnails.flatMap((category) => category.shaders as HomeShaderConfig[]);
-

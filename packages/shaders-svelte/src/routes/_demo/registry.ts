@@ -1,5 +1,9 @@
 import type { Component } from 'svelte';
 import {
+  Aurora,
+  auroraPresets,
+  Caustics,
+  causticsPresets,
   ColorPanels,
   colorPanelsPresets,
   Dithering,
@@ -85,6 +89,24 @@ export type DemoEntry = ShaderDemoEntry | CustomDemoEntry;
 const previewBySlug = Object.fromEntries(flatHomeThumbnails.map((s) => [s.url.replace(/^\//, ''), s.image]));
 
 export const demoRegistry: Record<string, DemoEntry> = {
+  aurora: {
+    kind: 'shader',
+    slug: 'aurora',
+    title: 'Aurora',
+    importName: 'Aurora',
+    ShaderComponent: Aurora,
+    presets: auroraPresets,
+    previewImage: previewBySlug['aurora'],
+  },
+  caustics: {
+    kind: 'shader',
+    slug: 'caustics',
+    title: 'Caustics',
+    importName: 'Caustics',
+    ShaderComponent: Caustics,
+    presets: causticsPresets,
+    previewImage: previewBySlug['caustics'],
+  },
   'mesh-gradient': {
     kind: 'shader',
     slug: 'mesh-gradient',
@@ -368,4 +390,3 @@ export const demoRegistry: Record<string, DemoEntry> = {
 export function getDemoEntry(slug: string): DemoEntry | undefined {
   return demoRegistry[slug];
 }
-

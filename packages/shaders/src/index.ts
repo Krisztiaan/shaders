@@ -62,6 +62,17 @@ export {
   type SimplexNoiseUniforms,
 } from './shaders/simplex-noise.js';
 
+/** Aurora borealis inspired shader — shimmering vertical curtains of color with soft glow bleeding */
+export { auroraMeta, auroraFragmentShader, type AuroraParams, type AuroraUniforms } from './shaders/aurora.js';
+
+/** Swimming-pool style projected caustics — bright dancing networks of refracted light */
+export {
+  causticsMeta,
+  causticsFragmentShader,
+  type CausticsParams,
+  type CausticsUniforms,
+} from './shaders/caustics.js';
+
 /** Up to 20 gooey blobs moving around the center and merging into smooth organic shapes */
 export {
   metaballsMeta,

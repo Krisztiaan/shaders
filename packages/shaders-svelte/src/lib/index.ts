@@ -34,6 +34,14 @@ export { default as SimplexNoise } from './shaders/SimplexNoise.svelte';
 export { simplexNoisePresets } from './shaders/simplex-noise.js';
 export type { SimplexNoiseUniforms, SimplexNoiseParams } from '@paper-design/shaders';
 
+export { default as Aurora } from './shaders/Aurora.svelte';
+export { auroraPresets } from './shaders/aurora.js';
+export type { AuroraUniforms, AuroraParams } from '@paper-design/shaders';
+
+export { default as Caustics } from './shaders/Caustics.svelte';
+export { causticsPresets } from './shaders/caustics.js';
+export type { CausticsUniforms, CausticsParams } from '@paper-design/shaders';
+
 export { default as Metaballs } from './shaders/Metaballs.svelte';
 export { metaballsPresets } from './shaders/metaballs.js';
 export type { MetaballsUniforms, MetaballsParams } from '@paper-design/shaders';
@@ -130,6 +138,8 @@ export {
   dotOrbitMeta,
   godRaysMeta,
   grainGradientMeta,
+  auroraMeta,
+  causticsMeta,
   meshGradientMeta,
   metaballsMeta,
   pulsingBorderMeta,

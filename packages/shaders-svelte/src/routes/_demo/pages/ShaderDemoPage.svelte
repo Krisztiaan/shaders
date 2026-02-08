@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { Component as SvelteComponent } from 'svelte';
   import {
+    auroraMeta,
+    causticsMeta,
     dotOrbitMeta,
     heatmapMeta,
     meshGradientMeta,
@@ -85,6 +87,8 @@
   const install = 'npm i @paper-design/shaders-svelte';
 
   const maxColorCountBySlug: Partial<Record<string, number>> = {
+    aurora: auroraMeta.maxColorCount,
+    caustics: causticsMeta.maxColorCount,
     'mesh-gradient': meshGradientMeta.maxColorCount,
     'dot-orbit': dotOrbitMeta.maxColorCount,
     metaballs: metaballsMeta.maxColorCount,
