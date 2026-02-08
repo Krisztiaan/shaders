@@ -12,7 +12,13 @@
   import { transparentPixel } from '../transparent-pixel.js';
   import { defaultPreset } from './heatmap.js';
 
-  type Props = ShaderComponentProps & HeatmapParams;
+  type Props = ShaderComponentProps &
+    HeatmapParams & {
+      /**
+       * Suspends the component while the image is being processed.
+       */
+      suspendWhenProcessingImage?: boolean;
+    };
 
   let {
     speed = defaultPreset.params.speed,
@@ -25,6 +31,7 @@
     outerGlow = defaultPreset.params.outerGlow,
     colorBack = defaultPreset.params.colorBack,
     colors = defaultPreset.params.colors,
+    suspendWhenProcessingImage = false,
     fit = defaultPreset.params.fit,
     offsetX = defaultPreset.params.offsetX,
     offsetY = defaultPreset.params.offsetY,
@@ -45,9 +52,13 @@
   let imageUrl = $derived(typeof image === 'string' ? image : image.src);
 
   let processedImage = $state<string>(transparentPixel);
+  let isProcessing = $state(false);
 
   $effect(() => {
+    if (typeof window === 'undefined') return;
+
     if (!imageUrl) {
+      isProcessing = false;
       processedImage = transparentPixel;
       return;
     }
@@ -55,10 +66,13 @@
     let active = true;
     let urlToRevoke: string | undefined;
 
+    if (suspendWhenProcessingImage) isProcessing = true;
+
     void toProcessedHeatmap(imageUrl).then((result) => {
       if (!active) return;
       urlToRevoke = URL.createObjectURL(result.blob);
       processedImage = urlToRevoke;
+      isProcessing = false;
     });
 
     return () => {
@@ -90,16 +104,18 @@
   } satisfies HeatmapUniforms);
 </script>
 
-<ShaderMount
-  {...rest}
-  {width}
-  {height}
-  {minPixelRatio}
-  {maxPixelCount}
-  {webGlContextAttributes}
-  {speed}
-  {frame}
-  fragmentShader={heatmapFragmentShader}
-  mipmaps={['u_image']}
-  {uniforms}
-/>
+{#if !suspendWhenProcessingImage || !isProcessing}
+  <ShaderMount
+    {...rest}
+    {width}
+    {height}
+    {minPixelRatio}
+    {maxPixelCount}
+    {webGlContextAttributes}
+    {speed}
+    {frame}
+    fragmentShader={heatmapFragmentShader}
+    mipmaps={['u_image']}
+    {uniforms}
+  />
+{/if}

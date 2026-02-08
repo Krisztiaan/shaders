@@ -1,0 +1,173 @@
+@font-face {
+  font-family: Matter;
+  font-style: normal;
+  font-display: swap;
+  src: url('https://paper.design/matter.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Paper Mono';
+  font-style: normal;
+  font-display: swap;
+  src: url('https://paper.design/paper-mono-0.100.woff2') format('woff2');
+}
+
+:root {
+  color-scheme: light dark;
+
+  --font-sans: Matter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'Paper Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+
+  --color-blue: oklch(74% 0.104 258);
+  --color-cream: #f0efe4;
+  --color-background: #ffffff;
+  --color-foreground: #222222;
+  --color-header: var(--color-cream);
+  --color-focus: oklch(0.74 0.12 258);
+
+  --color-backplate-1: rgba(240, 239, 228, 0.6);
+  --color-backplate-2: #e9e8e0;
+  --color-backplate-3: #dddbd2;
+  --color-table-border: #e2e1d8;
+
+  --color-code: #222222;
+
+  --shadow-floating:
+    rgba(58, 34, 17, 0.1) 0px 4px 40px -8px,
+    rgba(58, 34, 17, 0.2) 0px 12px 20px -8px,
+    rgba(58, 34, 17, 0.1) 0px 0px 0px 1px;
+
+  --max-w: 1104px;
+  --page-x: 16px;
+  --page-y: 20px;
+}
+
+@media (min-width: 28rem) {
+  :root {
+    --page-x: 24px;
+  }
+}
+
+@media (min-width: 40rem) {
+  :root {
+    --page-x: 32px;
+  }
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --page-x: 48px;
+  }
+}
+
+@media (min-width: 85rem) {
+  :root {
+    --max-w: 1472px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #000000;
+    --color-foreground: #f0efe4;
+    --color-header: #000000;
+    --color-focus: oklch(0.73 0.2 258 / 60%);
+    --color-code: #cdccc0;
+
+    --color-backplate-1: rgba(24, 24, 24, 1);
+    --color-backplate-2: #2a2a2a;
+    --color-backplate-3: #373737;
+    --color-table-border: #2a2a2a;
+
+    --shadow-floating:
+      rgba(0, 0, 0, 0.35) 0px 10px 40px -16px,
+      rgba(0, 0, 0, 0.25) 0px 2px 12px -4px,
+      rgba(240, 239, 228, 0.12) 0px 0px 0px 1px;
+  }
+}
+
+::selection {
+  background-color: oklch(78% 35% 258 / 50%);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  overflow-y: scroll;
+  font-family: var(--font-sans);
+  color: var(--color-foreground);
+  text-size-adjust: none;
+  font-size: 18px;
+  line-height: calc(4 / 3);
+  background-color: var(--color-cream);
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: var(--color-background);
+  }
+}
+
+pre,
+code {
+  font-family: var(--font-mono);
+}
+
+pre {
+  font-size: 14px;
+  line-height: 26px;
+}
+
+code {
+  font-size: 0.9em;
+}
+
+a {
+  color: inherit;
+}
+
+.link {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, currentcolor 35%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+@media (hover: hover) {
+  .link:hover {
+    text-decoration-color: color-mix(in oklab, currentcolor 70%, transparent);
+  }
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  height: 6px;
+  width: 0px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #909090;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #777772;
+}
+
