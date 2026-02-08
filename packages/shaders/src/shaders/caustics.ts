@@ -137,29 +137,34 @@ void main() {
   c += 0.65 * getCausticNoise(p * 1.15 + 0.2 * w, 0.9 * t, 2.05);
   c = c * c;
 
-  // Normalize-ish into 0..1 then shape into thin bright networks.
-  float v = max(0.0, c - 0.8);
-  v = 1.0 - exp(-1.25 * v);
-  v = pow(clamp(v, 0.0, 1.0), mix(1.2, 4.0, clamp(u_contrast, 0.0, 1.0)));
-
   float thickness = clamp(u_thickness, 0.0, 1.0);
-  float width = mix(0.03, 0.2, thickness);
-  float aa = max(0.001, fwidth(v) * (0.85 + 0.15 * u_scale));
+  float contrast = clamp(u_contrast, 0.0, 1.0);
 
-  float core = smoothstep(0.62 - width - aa, 0.62 + width + aa, v);
-  float halo = smoothstep(0.18 - 2.5 * width - aa, 0.62 + 2.5 * width + aa, v);
+  // Caustic networks tend to be bright, thin ridges. A good approximation is
+  // using the gradient magnitude of the caustic field.
+  float grad = length(vec2(dFdx(c), dFdy(c)));
+  grad *= (0.8 + 1.2 * max(0.0, u_size));
+
+  float threshold = mix(0.20, 0.06, thickness);
+  float aa = max(0.001, fwidth(grad) * (0.85 + 0.15 * u_scale));
+
+  float core = smoothstep(threshold - aa, threshold + aa, grad);
+  float halo = smoothstep(0.4 * threshold - aa, 1.35 * threshold + aa, grad);
+
+  core = pow(core, mix(2.6, 0.9, contrast));
+  halo = pow(halo, mix(2.1, 0.85, contrast));
 
   vec4 back = u_colorBack;
   back.rgb *= back.a;
 
-  float colorT = fract(0.07 * p.x + 0.05 * p.y + 0.25 * fbm(p * 0.15 + vec2(0.2 * t, 0.0)));
+  float colorT = fract(0.06 * p.x + 0.05 * p.y + 0.22 * fbm(p * 0.15 + vec2(0.2 * t, 0.0)));
   vec3 causticCol = gradient(colorT).rgb;
 
   float intensity = clamp(u_intensity, 0.0, 2.0);
   float glow = clamp(u_glow, 0.0, 1.0);
 
   vec3 color = mix(back.rgb, causticCol, intensity * core);
-  color += glow * intensity * 0.35 * halo * causticCol;
+  color += glow * intensity * 0.45 * halo * causticCol;
 
   ${colorBandingFix}
   fragColor = vec4(color, 1.0);

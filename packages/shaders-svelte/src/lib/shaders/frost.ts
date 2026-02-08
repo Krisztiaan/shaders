@@ -11,11 +11,11 @@ export const defaultPreset: FrostPreset = {
     colorBack: '#0b1320',
     colors: ['#ffffff', '#b7f0ff', '#5ba4ff'],
     coverage: 1,
-    softness: 0.45,
-    detail: 0.75,
-    crystal: 0.85,
+    softness: 0.35,
+    detail: 0.9,
+    crystal: 1,
     intensity: 1.15,
-    glow: 0.35,
+    glow: 0.45,
   },
 };
 
@@ -28,9 +28,9 @@ export const subtlePreset: FrostPreset = {
     colorBack: '#0a0f16',
     colors: ['#e9f3ff', '#a9d7ff'],
     coverage: 1,
-    softness: 0.6,
-    detail: 0.6,
-    crystal: 0.6,
+    softness: 0.55,
+    detail: 0.75,
+    crystal: 0.75,
     intensity: 0.95,
     glow: 0.25,
   },
@@ -45,13 +45,12 @@ export const whitePreset: FrostPreset = {
     colorBack: '#f8fbff',
     colors: ['#ffffff', '#d6f2ff', '#a0c7ff'],
     coverage: 1,
-    softness: 0.5,
-    detail: 0.7,
-    crystal: 0.8,
+    softness: 0.45,
+    detail: 0.85,
+    crystal: 0.9,
     intensity: 0.85,
     glow: 0.2,
   },
 };
 
 export const frostPresets: FrostPreset[] = [defaultPreset, subtlePreset, whitePreset];
-

@@ -112,44 +112,73 @@ void main() {
   float detail = clamp(u_detail, 0.0, 1.0);
   float crystal = clamp(u_crystal, 0.0, 1.0);
 
-  // Base coordinate scaling (v_patternUV is in pixel-ish units * 0.01).
-  vec2 q = p * (0.55 + 1.8 * detail);
+  // ---------------------------------------------------
+  // Multiple growth centers (seeds) via a Voronoi-like lookup.
+  // Work in a seed grid space derived from detail.
+  float seedScale = mix(0.65, 1.8, detail);
+  vec2 x = p * seedScale;
+  vec2 cell = floor(x);
+  vec2 f = fract(x);
 
-  // Domain warp for organic dendrites.
-  vec2 w = vec2(
-    fbm(q * 0.35 + vec2(0.0, 0.09 * t)),
-    fbm(q * 0.35 + vec2(4.0, 0.07 * t))
-  ) - 0.5;
-  q += (0.75 * crystal) * 2.0 * w;
+  vec2 best = vec2(0.0);
+  float md = 1e9;
+  float seedHash = 0.0;
 
-  float n0 = fbm(q * 0.45 + vec2(0.05 * t, 0.0));
-  float n1 = fbm(q * 1.2 + vec2(0.0, 0.03 * t));
+  for (int j = -1; j <= 1; j++) {
+    for (int i = -1; i <= 1; i++) {
+      vec2 g = vec2(float(i), float(j));
+      vec2 c = cell + g;
 
-  // A ridged field, then a directional "branch" modulation using polar angle.
-  float r = ridge(n1);
-  float ang = atan(p.y, p.x);
-  float branchFreq = 6.0 + 10.0 * crystal;
-  float branches = abs(sin(branchFreq * ang + 6.0 * n0));
-  branches = pow(1.0 - branches, 2.2);
+      vec2 o = vec2(randomR(c), randomR(c + vec2(17.0, 3.0)));
+      vec2 r = g + o - f;
+      float d = dot(r, r);
+      if (d < md) {
+        md = d;
+        best = r;
+        seedHash = randomR(c + vec2(11.0, 7.0));
+      }
+    }
+  }
 
-  float dend = pow(clamp(r * branches, 0.0, 1.0), 1.15 + 2.6 * crystal);
-  float filaments = pow(ridge(fbm(q * 2.4 + 3.0)), 1.5);
+  // Local coordinates relative to the nearest seed.
+  vec2 d = -best;
+  float dist = length(d);
 
-  float field = clamp(0.7 * dend + 0.3 * filaments, 0.0, 1.0);
+  // ---------------------------------------------------
+  // Dendrite field: 6-direction crystalline bias + ridged noise filaments.
+  float ang = atan(d.y, d.x);
+  float angWarp = (fbm((d + 10.0) * (2.5 + 4.0 * detail) + vec2(0.08 * t, 0.0)) - 0.5);
+  float a = ang + (0.9 * crystal) * angWarp;
 
-  // Growth reveal: approaches u_coverage over time.
+  // Lines where sin(3a) ~= 0 => 6-fold symmetry.
+  float ray = abs(sin(3.0 * a + TWO_PI * seedHash));
+  float rayWidth = mix(0.14, 0.05, crystal);
+  float rayLine = 1.0 - smoothstep(0.0, rayWidth, ray);
+
+  float rid = ridge(fbm(d * (3.2 + 6.5 * detail) + 12.0 * seedHash));
+  float fil = ridge(fbm(d * (11.0 + 10.0 * detail) + 4.0));
+
+  float dend = rayLine * pow(clamp(rid, 0.0, 1.0), 0.9 + 1.7 * crystal);
+  float filaments = (0.35 + 0.65 * rayLine) * pow(clamp(fil, 0.0, 1.0), 1.6);
+
+  float field = clamp(0.75 * dend + 0.25 * filaments, 0.0, 1.0);
+
+  // ---------------------------------------------------
+  // Growth reveal: frost expands outward from each seed.
   float coverage = clamp(u_coverage, 0.0, 1.0);
-  float progress = coverage * (1.0 - exp(-0.08 * max(0.0, t)));
+  float progress = coverage * (1.0 - exp(-0.06 * max(0.0, t)));
+  float radius = progress * 1.55;
 
-  // Local variability for more natural spreading.
-  float seed = fbm(p * 0.12 + vec2(0.0, 0.04 * t));
-  float front = clamp(0.12 + 0.38 * clamp(u_softness, 0.0, 1.0), 0.02, 0.6);
+  float seedJitter = (fbm(d * 2.2 + 20.0 * seedHash) - 0.5);
+  float front = mix(0.09, 0.38, clamp(u_softness, 0.0, 1.0));
 
-  float freeze = smoothstep(progress - front, progress + front, field + 0.22 * seed);
+  float freeze = 1.0 - smoothstep(radius - front, radius + front, dist + 0.22 * seedJitter);
 
-  // Enhance crisp crystal ridges.
+  // Frosted glass base + brighter dendrite ridges.
+  float haze = freeze * (0.25 + 0.25 * fbm(p * 0.18 + vec2(0.0, 0.05 * t)));
+
   float aa = max(0.001, fwidth(field) * (0.9 + 0.1 * u_scale));
-  float ridgeEdge = smoothstep(0.55 - aa, 0.88 + aa, dend);
+  float ridgeEdge = smoothstep(0.35 - aa, 0.85 + aa, field);
   float core = freeze * ridgeEdge;
 
   vec4 back = u_colorBack;
@@ -158,11 +187,14 @@ void main() {
   float intensity = clamp(u_intensity, 0.0, 2.0);
   float glow = clamp(u_glow, 0.0, 1.0);
 
-  float s = clamp(0.85 * field + 0.25 * seed, 0.0, 1.0);
+  float s = clamp(0.85 * field + 0.15 * seedHash, 0.0, 1.0);
   vec3 frostCol = gradient(s).rgb * intensity;
+  vec3 milk = mix(vec3(1.0), frostCol, 0.65);
 
-  vec3 color = mix(back.rgb, frostCol, core);
-  color += glow * 0.25 * freeze * frostCol;
+  vec3 color = back.rgb;
+  color = mix(color, milk, haze);
+  color = mix(color, frostCol, core);
+  color += glow * 0.35 * core * frostCol;
 
   ${colorBandingFix}
   fragColor = vec4(color, 1.0);
@@ -192,4 +224,3 @@ export interface FrostParams extends ShaderSizingParams, ShaderMotionParams {
   intensity?: number;
   glow?: number;
 }
-

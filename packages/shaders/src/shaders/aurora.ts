@@ -116,29 +116,35 @@ void main() {
   float boundary = 0.35 + 0.35 * boundaryNoise;
   float verticalMask = smoothstep(boundary - 0.25, boundary, yn);
 
-  // Curtain field: vertical stripes with y-dependent sway and noise fold.
+  // Curtain field: shimmering vertical rays with y-dependent sway.
   float bands = max(0.1, u_bands);
-  vec2 q = vec2(p.x * bands, p.y * 0.6);
+  float x = p.x * bands;
 
-  float n = fbm(q * 0.55 + vec2(0.0, t));
-  float sway = sin(yn * 8.0 + t * 1.4 + 6.0 * n);
-  float fold = (n - 0.5) + 0.35 * sin(t * 0.7 + p.x * 0.4);
+  float n = fbm(vec2(0.12 * x, 0.9 * t));
+  float n2 = fbm(vec2(0.35 * x + 4.0, 0.55 * p.y - 1.2 * t));
 
-  float x = q.x + u_distortion * (2.2 * sway + 2.0 * fold);
-  float stripe = abs(sin(x + 2.0 * n + t));
+  float sway = sin(0.6 * p.y + 1.6 * t + 7.0 * n2);
+  float fold = (fbm(vec2(0.06 * x, 0.12 * p.y + 0.8 * t)) - 0.5);
+
+  float rayX = x + u_distortion * (2.2 * sway + 2.6 * fold);
+
+  float cell = fract(rayX);
+  float ray = 1.0 - abs(cell - 0.5) * 2.0;
+  ray = clamp(ray, 0.0, 1.0);
 
   float softness = clamp(u_softness, 0.0, 1.0);
-  float core = pow(stripe, mix(10.0, 2.0, softness));
-  float halo = pow(stripe, 2.0);
+  float core = pow(ray, mix(10.0, 2.2, softness));
+  float halo = pow(ray, 1.2);
 
-  float a = mix(halo, core, 0.65);
+  float shimmer = 0.65 + 0.35 * sin(2.4 * t + 0.35 * p.y + 6.0 * n + 4.0 * n2);
+  float a = mix(halo, core, 0.7) * shimmer;
   a *= verticalMask;
   a *= (0.35 + 0.65 * yn);
   a *= clamp(u_intensity, 0.0, 2.0);
   a = clamp(a, 0.0, 1.0);
 
   // Color along the curtains.
-  float s = fract(0.1 * p.x + 0.55 * yn + 0.6 * n + 0.05 * sin(t + p.x * 0.2));
+  float s = fract(0.06 * rayX + 0.55 * yn + 0.55 * n2 + 0.04 * sin(t + 0.12 * x));
   vec4 g = gradient(s);
 
   vec3 bg = u_colorBack.rgb * u_colorBack.a;
@@ -175,4 +181,3 @@ export interface AuroraParams extends ShaderSizingParams, ShaderMotionParams {
   bands?: number;
   distortion?: number;
 }
-

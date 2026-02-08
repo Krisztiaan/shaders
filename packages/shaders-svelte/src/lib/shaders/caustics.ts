@@ -12,10 +12,10 @@ export const defaultPreset: CausticsPreset = {
     colors: ['#ffffff', '#69d2ff', '#00fff0'],
     size: 1.05,
     distortion: 0.45,
-    thickness: 0.28,
-    contrast: 0.75,
-    intensity: 1.05,
-    glow: 0.45,
+    thickness: 0.22,
+    contrast: 0.8,
+    intensity: 1.15,
+    glow: 0.55,
   },
 };
 
@@ -54,4 +54,3 @@ export const neonPreset: CausticsPreset = {
 };
 
 export const causticsPresets: CausticsPreset[] = [defaultPreset, sunlightPreset, neonPreset];
-
