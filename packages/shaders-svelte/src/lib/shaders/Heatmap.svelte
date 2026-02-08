@@ -68,12 +68,18 @@
 
     if (suspendWhenProcessingImage) isProcessing = true;
 
-    void toProcessedHeatmap(imageUrl).then((result) => {
-      if (!active) return;
-      urlToRevoke = URL.createObjectURL(result.blob);
-      processedImage = urlToRevoke;
-      isProcessing = false;
-    });
+    void toProcessedHeatmap(imageUrl)
+      .then((result) => {
+        if (!active) return;
+        urlToRevoke = URL.createObjectURL(result.blob);
+        processedImage = urlToRevoke;
+        isProcessing = false;
+      })
+      .catch(() => {
+        if (!active) return;
+        processedImage = transparentPixel;
+        isProcessing = false;
+      });
 
     return () => {
       active = false;
