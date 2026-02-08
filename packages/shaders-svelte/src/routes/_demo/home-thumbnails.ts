@@ -18,6 +18,8 @@ import {
   auroraPresets,
   Caustics,
   causticsPresets,
+  Frost,
+  frostPresets,
   HalftoneCmyk,
   halftoneCmykPresets,
   HalftoneDots,
@@ -192,6 +194,14 @@ export const homeThumbnails = [
         url: '/caustics',
         ShaderComponent: Caustics,
         shaderConfig: { ...causticsPresets[0].params },
+        alwaysLivePreview: true,
+      },
+      {
+        name: 'frost',
+        image: '/shaders/frost.svg',
+        url: '/frost',
+        ShaderComponent: Frost,
+        shaderConfig: { ...frostPresets[0].params },
         alwaysLivePreview: true,
       },
       {

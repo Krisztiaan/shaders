@@ -4,6 +4,7 @@
     auroraMeta,
     causticsMeta,
     dotOrbitMeta,
+    frostMeta,
     heatmapMeta,
     meshGradientMeta,
     metaballsMeta,
@@ -89,6 +90,7 @@
   const maxColorCountBySlug: Partial<Record<string, number>> = {
     aurora: auroraMeta.maxColorCount,
     caustics: causticsMeta.maxColorCount,
+    frost: frostMeta.maxColorCount,
     'mesh-gradient': meshGradientMeta.maxColorCount,
     'dot-orbit': dotOrbitMeta.maxColorCount,
     metaballs: metaballsMeta.maxColorCount,

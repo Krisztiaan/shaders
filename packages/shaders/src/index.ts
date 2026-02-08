@@ -73,6 +73,9 @@ export {
   type CausticsUniforms,
 } from './shaders/caustics.js';
 
+/** Frost / ice-crystal growth inspired shader — branching crystalline patterns that freeze over time */
+export { frostMeta, frostFragmentShader, type FrostParams, type FrostUniforms } from './shaders/frost.js';
+
 /** Up to 20 gooey blobs moving around the center and merging into smooth organic shapes */
 export {
   metaballsMeta,

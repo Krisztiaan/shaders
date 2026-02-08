@@ -42,6 +42,10 @@ export { default as Caustics } from './shaders/Caustics.svelte';
 export { causticsPresets } from './shaders/caustics.js';
 export type { CausticsUniforms, CausticsParams } from '@paper-design/shaders';
 
+export { default as Frost } from './shaders/Frost.svelte';
+export { frostPresets } from './shaders/frost.js';
+export type { FrostUniforms, FrostParams } from '@paper-design/shaders';
+
 export { default as Metaballs } from './shaders/Metaballs.svelte';
 export { metaballsPresets } from './shaders/metaballs.js';
 export type { MetaballsUniforms, MetaballsParams } from '@paper-design/shaders';
@@ -140,6 +144,7 @@ export {
   grainGradientMeta,
   auroraMeta,
   causticsMeta,
+  frostMeta,
   meshGradientMeta,
   metaballsMeta,
   pulsingBorderMeta,
