@@ -71,12 +71,18 @@
 
     if (suspendWhenProcessingImage) isProcessing = true;
 
-    void toProcessedLiquidMetal(imageUrl).then((result) => {
-      if (!active) return;
-      urlToRevoke = URL.createObjectURL(result.pngBlob);
-      processedImage = urlToRevoke;
-      isProcessing = false;
-    });
+    void toProcessedLiquidMetal(imageUrl)
+      .then((result) => {
+        if (!active) return;
+        urlToRevoke = URL.createObjectURL(result.pngBlob);
+        processedImage = urlToRevoke;
+        isProcessing = false;
+      })
+      .catch(() => {
+        if (!active) return;
+        processedImage = transparentPixel;
+        isProcessing = false;
+      });
 
     return () => {
       active = false;
