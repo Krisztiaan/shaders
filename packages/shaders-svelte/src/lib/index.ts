@@ -46,6 +46,14 @@ export { default as Frost } from './shaders/Frost.svelte';
 export { frostPresets } from './shaders/frost.js';
 export type { FrostUniforms, FrostParams } from '@paper-design/shaders';
 
+export { default as Smoke } from './shaders/Smoke.svelte';
+export { smokePresets } from './shaders/smoke.js';
+export type { SmokeUniforms, SmokeParams } from '@paper-design/shaders';
+
+export { default as Rain } from './shaders/Rain.svelte';
+export { rainPresets } from './shaders/rain.js';
+export type { RainUniforms, RainParams } from '@paper-design/shaders';
+
 export { default as Metaballs } from './shaders/Metaballs.svelte';
 export { metaballsPresets } from './shaders/metaballs.js';
 export type { MetaballsUniforms, MetaballsParams } from '@paper-design/shaders';
@@ -145,6 +153,8 @@ export {
   auroraMeta,
   causticsMeta,
   frostMeta,
+  smokeMeta,
+  rainMeta,
   meshGradientMeta,
   metaballsMeta,
   pulsingBorderMeta,

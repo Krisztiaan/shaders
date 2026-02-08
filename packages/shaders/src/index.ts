@@ -76,6 +76,12 @@ export {
 /** Frost / ice-crystal growth inspired shader — branching crystalline patterns that freeze over time */
 export { frostMeta, frostFragmentShader, type FrostParams, type FrostUniforms } from './shaders/frost.js';
 
+/** Wispy turbulent smoke plumes — advection-like motion with density falloff */
+export { smokeMeta, smokeFragmentShader, type SmokeParams, type SmokeUniforms } from './shaders/smoke.js';
+
+/** Diagonal rain streaks with subtle variation */
+export { rainMeta, rainFragmentShader, type RainParams, type RainUniforms } from './shaders/rain.js';
+
 /** Up to 20 gooey blobs moving around the center and merging into smooth organic shapes */
 export {
   metaballsMeta,
