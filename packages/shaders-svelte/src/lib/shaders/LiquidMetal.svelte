@@ -13,7 +13,13 @@
   import { transparentPixel } from '../transparent-pixel.js';
   import { defaultPreset } from './liquid-metal.js';
 
-  type Props = ShaderComponentProps & LiquidMetalParams;
+  type Props = ShaderComponentProps &
+    LiquidMetalParams & {
+      /**
+       * Suspends the component while the image is being processed.
+       */
+      suspendWhenProcessingImage?: boolean;
+    };
 
   let {
     colorBack = defaultPreset.params.colorBack,
@@ -29,6 +35,7 @@
     shiftBlue = defaultPreset.params.shiftBlue,
     angle = defaultPreset.params.angle,
     shape = defaultPreset.params.shape,
+    suspendWhenProcessingImage = false,
     fit = defaultPreset.params.fit,
     scale = defaultPreset.params.scale,
     rotation = defaultPreset.params.rotation,
@@ -48,9 +55,13 @@
 
   let imageUrl = $derived(typeof image === 'string' ? image : image.src);
   let processedImage = $state<string>(transparentPixel);
+  let isProcessing = $state(false);
 
   $effect(() => {
+    if (typeof window === 'undefined') return;
+
     if (!imageUrl) {
+      isProcessing = false;
       processedImage = transparentPixel;
       return;
     }
@@ -58,10 +69,13 @@
     let active = true;
     let urlToRevoke: string | undefined;
 
+    if (suspendWhenProcessingImage) isProcessing = true;
+
     void toProcessedLiquidMetal(imageUrl).then((result) => {
       if (!active) return;
       urlToRevoke = URL.createObjectURL(result.pngBlob);
       processedImage = urlToRevoke;
+      isProcessing = false;
     });
 
     return () => {
@@ -96,16 +110,18 @@
   } satisfies LiquidMetalUniforms);
 </script>
 
-<ShaderMount
-  {...rest}
-  {width}
-  {height}
-  {minPixelRatio}
-  {maxPixelCount}
-  {webGlContextAttributes}
-  {speed}
-  {frame}
-  fragmentShader={liquidMetalFragmentShader}
-  mipmaps={['u_image']}
-  {uniforms}
-/>
+{#if !suspendWhenProcessingImage || !isProcessing}
+  <ShaderMount
+    {...rest}
+    {width}
+    {height}
+    {minPixelRatio}
+    {maxPixelCount}
+    {webGlContextAttributes}
+    {speed}
+    {frame}
+    fragmentShader={liquidMetalFragmentShader}
+    mipmaps={['u_image']}
+    {uniforms}
+  />
+{/if}
